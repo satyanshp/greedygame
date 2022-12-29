@@ -1,6 +1,49 @@
 .App {
-  text-align: center;
-  height: 100vh;
+  min-height: 100vh;
+  height: 100%;
   display: flex;
 }
-
+.date__container{
+  display: flex;
+  justify-content: space-between;
+  /* width: 90%; */
+  margin: 0 auto;
+  position: relative;
+}
+.datePicker__button{
+  padding: 6px 20px;
+  display: flex;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: capitalize;
+  background-color: #fff;
+  color: rgb(55, 55, 55);
+  border-radius: 2.5px;
+  border: 1px solid rgba(159, 158, 158, 0.889);
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-family: 'Open Sans', sans-serif;
+}
+.date__picker{
+  position: absolute;
+  top: 40px;
+  left: 0px;
+}
+.setting_container{
+  display: flex;
+  flex-direction: column;
+  font-weight: 700;
+  font-size: 15px;
+  border: 1px solid rgba(134, 134, 134, 0.793);
+  border-radius: 6px;
+  padding: 15px 20px;
+  margin-top: 1%;
+  gap: 7px;
+}
+.setting_sort{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
