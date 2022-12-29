@@ -2,7 +2,7 @@ import React from 'react'
 import { FaCalendarAlt } from 'react-icons/fa';
 import { GoSettings } from 'react-icons/go';
 import { DateRangePicker } from 'react-date-range';
-import { addDays, subDays, format } from "date-fns";
+import { addDays, subDays, format, differenceInDays, parseISO } from "date-fns";
 import Table from './components/elements/Table';
 import { useDispatch, useSelector } from 'react-redux';
 import { dateData } from './reducers/data';
@@ -27,11 +27,19 @@ function App() {
     let dataItems = [...tableDataView];
     let dataIndexes = [...tableDataSortted];
 
-    const draggableItemContent = dataItems.splice(dragItem.current,1)[0];
-    const draggableIndexContent = dataIndexes.splice(dragItem.current,1)[0];
+    let dataItemsDragIndex = dataItems.findIndex(x=>x.value===dragItem.current);
+    let dataItemsDragOverIndex = dataItems.findIndex(x=>x.value===dragOverItem.current);
 
-    dataItems.splice(dragOverItem.current, 0, draggableItemContent);
-    dataIndexes.splice(dragOverItem.current, 0, draggableIndexContent);
+    let dataIndexesDragIndex = dataIndexes.indexOf(dragItem.current)
+    let dataIndexesDragOverIndex = dataIndexes.indexOf(dragOverItem.current)
+
+    const draggableItemContent = dataItems.splice(dataItemsDragIndex,1)[0];
+    dataItems.splice(dataItemsDragOverIndex, 0, draggableItemContent);
+    
+    if(dataIndexes.includes(dragItem.current) && dataIndexes.includes(dragOverItem.current)){
+      const draggableIndexContent = dataIndexes.splice(dataIndexesDragIndex,1)[0];
+      dataIndexes.splice(dataIndexesDragOverIndex, 0, draggableIndexContent);
+    }
 
     dragItem.current=null;
     dragOverItem.current=null;
@@ -40,11 +48,15 @@ function App() {
     settingDispatch(headerData(dataItems));
     indexDispatch(tableDataSort(dataIndexes));
 
-    console.log(tableDataView);
+    // console.log(tableDataView);
+    console.log(dataItemsDragIndex);
+    console.log(dataItemsDragOverIndex);
   }
 
   const dispatch = useDispatch();
   const dataView = useSelector((state)=>state.data.value);
+
+  const [diffInDays, setDiffInDays] = React.useState();
 
   //data fetching
   const [fetchLink, setFetchLink] = React.useState('');
@@ -54,6 +66,8 @@ function App() {
     // onChange(selection);
     setSelectionRange([selection]);
     console.log(selection);
+    // console.log(format(selection.startDate, 'dd MMMM yyyy'));
+    setDiffInDays(differenceInDays(selection.endDate,selection.startDate)+1);
     setFetchLink(`http://go-dev.greedygame.com/v3/dummy/report?startDate=${format(selection.startDate, 'yyyy-MM-dd')}&endDate=${format(selection.endDate, 'yyyy-MM-dd')}`);
     console.log(fetchLink);
   };
@@ -61,6 +75,7 @@ function App() {
   //toggle 
   const [toggleDatePicker, setToggleDatePicker] = React.useState(false);
   const [openSetting, setOpenSetting] = React.useState(true);
+  const [dataSecondHeader, setDataSecondHeader] = React.useState({});
 
   //date-selection
   const [selectionRange,setSelectionRange] = React.useState([{
@@ -70,6 +85,36 @@ function App() {
   }]);
   
 
+  function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
+
+  //toggle to Show/Hide Column
+
+  const [valueToRemove, setValueToRemove] = React.useState([]);
+
+  const toggleShowColumn = (value,index) => {
+    const dataSortted = [...tableDataSortted] 
+
+    if(dataSortted.includes(value)){
+      indexDispatch(tableDataSort(dataSortted.filter((item,idx)=>(item!==value))));
+      console.log(dataSortted);
+    }
+    else{
+      dataSortted.splice(index, 0, value);
+      indexDispatch(tableDataSort(dataSortted));
+      console.log(dataSortted);
+    };
+    
+    if(valueToRemove.includes(value)){
+    valueToRemove.splice(valueToRemove.indexOf(value),1);
+    }
+    else{
+      setValueToRemove([...valueToRemove,value]);
+    };
+  }
+  
+
  //fetch request
 
   React.useEffect(() => {
@@ -77,11 +122,57 @@ function App() {
     .then(response => response.json())
     .then(data => 
       {
+        const requestArray = data.data.map(v=>{
+          const request = v.requests;
+          return(request)
+        })
+        const responseArray = data.data.map(v=>{
+          const response = v.responses;
+          return(response)
+        })
+        const impressionArray = data.data.map(v=>{
+          const impression = v.impressions;
+          return(impression)
+        })
+        const clickArray = data.data.map(v=>{
+          const click = v.clicks;
+          return(click)
+        })
+        const revenueArray = data.data.map(v=>{
+          const revenue = v.revenue;
+          return(revenue)
+        })
+        const fill_rateArray = data.data.map(v=>{
+          const fill_rate = (v.requests/v.responses)*100;
+          return(fill_rate)
+        })
+        const ctrArray = data.data.map(v=>{
+          const ctr = (v.clicks/v.impressions)*100;
+          return(ctr)
+        })
         // adding fill_rate and ctr to the array
         const updatedDataView = data.data.map(v=>{
-          const fill_rate = (v.requests/v.responses)*100;
-          const ctr = (v.clicks/v.impressions)*100;
-          return({...v,fill_rate:fill_rate,ctr:ctr})
+          const date = format(parseISO(v.date), 'dd MMMM yyyy');
+          const dataNum = data.data.length;
+          const requestSum = requestArray.reduce((a,b)=>a+b,0);
+          const responseSum = responseArray.reduce((a,b)=>a+b,0);
+          const impressionSum = impressionArray.reduce((a,b)=>a+b,0);
+          const clickSum = clickArray.reduce((a,b)=>a+b,0);
+          const revenueSum = `$${parseFloat(revenueArray.reduce((a,b)=>a+b,0)).toFixed(2)}`;
+          const fill_rateAverage = (fill_rateArray.reduce((a,b)=>a+b,0)/data.data.length).toFixed(2);
+          const ctrAverage = (ctrArray.reduce((a,b)=>a+b,0)/data.data.length).toFixed(2);
+
+          setDataSecondHeader({date:diffInDays,app_id:dataNum,requests:requestSum,responses:responseSum,impressions:impressionSum,clicks:clickSum,revenue:revenueSum,fill_rate:fill_rateAverage,ctr:ctrAverage})
+          console.log(dataSecondHeader)
+          
+          const revenue = `$${(v.revenue).toFixed(2)}`;
+          const responses = numberWithCommas(v.responses);
+          const requests = numberWithCommas(v.requests);
+          const impressions = numberWithCommas(v.impressions);
+          const clicks = numberWithCommas(v.clicks)
+          const fill_rate = `${((v.requests/v.responses)*100).toFixed(2)}%`;
+          const ctr = `${((v.clicks/v.impressions)*100).toFixed(2)}%`;
+          return({...v,requests:requests,clicks:clicks,impressions:impressions,responses:responses,date:date,revenue:revenue,fill_rate:fill_rate,ctr:ctr})
         })
         return dispatch(dateData(updatedDataView))
       }
@@ -110,15 +201,17 @@ function App() {
             <div className='setting_sort'>
               {tableDataView?.map((item,index)=>(
                 <button 
-                  className='datePicker__button'
+                  className='datePicker__button setting_dragButtons'
+                  style={{borderLeft:!valueToRemove.includes(item.value)?'3.5px solid rgb(61, 145, 255)':''}}
                   key={index} 
                   draggable 
-                  onDragStart={(e) => (dragItem.current=index)} 
-                  onDragEnter={(e) => (dragOverItem.current=index)}
+                  onDragStart={(e) => (dragItem.current=item.value)} 
+                  onDragEnter={(e) => (dragOverItem.current=item.value)}
                   onDragEnd={handleDrag}
                   onDragOver={(e) => e.preventDefault()}
+                  onClick={()=>toggleShowColumn(item.value,index)}
                 >
-                  {item}
+                  {item.header}
                 </button>
               ))}
             </div>
@@ -128,7 +221,7 @@ function App() {
             </div>
           </div>}
         </div>
-        <Table/>
+        <Table dataSecondHeader={dataSecondHeader} valueToRemove={valueToRemove}/>
       </div>
     </div>
   );

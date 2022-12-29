@@ -2,7 +2,45 @@ import { createSlice } from "@reduxjs/toolkit";
 
 export const tableHeadSlice = createSlice({
     name:'tableHead',
-    initialState:{value:['Date', 'App Name', 'AD Request', 'AD Response', 'Impression', 'Clicks', 'Revenue', 'Fill Rate', 'CTR']},
+    initialState:{
+        value:[
+                {
+                    header:'Date',
+                    value:'date'
+                }, 
+                {
+                    header:'App Name',
+                    value:'app_id'
+                }, 
+                {
+                    header:'AD Request',
+                    value:'requests'
+                }, 
+                {
+                    header:'AD Response',
+                    value:'responses'
+                }, 
+                {
+                    header:'Impression',
+                    value:'impressions'
+                }, 
+                {
+                    header:'Clicks',
+                    value:'clicks'
+                }, 
+                {
+                    header:'Revenue',
+                    value:'revenue'
+                }, 
+                {
+                    header:'Fill Rate',
+                    value:'fill_rate'
+                }, 
+                {
+                    header:'CTR',
+                    value:'ctr'
+                }
+            ]},
     reducers:{
         headerData:(state, action) => {
             state.value = action.payload;

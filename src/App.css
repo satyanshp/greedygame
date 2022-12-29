@@ -30,6 +30,7 @@
   position: absolute;
   top: 40px;
   left: 0px;
+  z-index: 1000;
 }
 .setting_container{
   display: flex;
@@ -46,4 +47,11 @@
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+}
+.setting_dragButtons{
+  /* border-left: 3.5px solid rgb(61, 145, 255); */
+  width: 10vw;
+  text-align: left;
+  justify-content: flex-start;
+  color: rgb(59, 59, 59);
 }
