@@ -77,7 +77,7 @@ const Table = ({dataSecondHeader,valueToRemove}) => {
               if(searchInput === ''){
                 return v;
               }
-              else if(v.app_name.includes(searchInput)){
+              else if(v.app_name.toLowerCase().includes(searchInput.toLowerCase())){
                 return v;
               }
             }
