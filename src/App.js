@@ -196,7 +196,7 @@ function App() {
           const fill_rateAverage = (fill_rateArray.reduce((a,b)=>a+b,0)/data.data.length).toFixed(2);
           const ctrAverage = (ctrArray.reduce((a,b)=>a+b,0)/data.data.length).toFixed(2);
 
-          setDataSecondHeader({date:diffInDays,app_id:dataNum,requests:requestSum,responses:responseSum,impressions:impressionSum,clicks:clickSum,revenue:revenueSum,fill_rate:fill_rateAverage,ctr:ctrAverage})
+          setDataSecondHeader({date:diffInDays,app_name:dataNum,requests:requestSum,responses:responseSum,impressions:impressionSum,clicks:clickSum,revenue:revenueSum,fill_rate:fill_rateAverage,ctr:ctrAverage})
           
           const revenue = `$${(v.revenue).toFixed(2)}`;
           const responses = numberWithCommas(v.responses);
