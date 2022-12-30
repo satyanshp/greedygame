@@ -33,7 +33,7 @@ const Table = ({dataSecondHeader,valueToRemove}) => {
     setSearchInput(searchInputt);
   }
   const handleFilter = (value) => {
-    if(value==='app_id'){
+    if(value==='app_name'){
       setOpenSearch(!openSearch)
     };
     if(value==='responses'){
