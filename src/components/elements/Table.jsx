@@ -54,7 +54,7 @@ const Table = ({dataSecondHeader,valueToRemove}) => {
             <th key={index} style={{textAlign: index>=2?'right':'left',position:'relative'}}>
               <div style={{cursor:'pointer'}} onClick={()=>handleFilter(item.value)}><HiFilter color='rgb(98, 97, 97)'/></div>
               <div style={{color:'rgb(98, 97, 97)',fontSize:'13px',position:'relative'}}>{item.header}</div>
-              {(openSearch&&item.value==='app_id') &&
+              {(openSearch&&item.value==='app_name') &&
                 <div style={{backgroundColor:'#fff',display:'flex',flexDirection:'column',padding:'15px 20px',gap:'20px',justifyContent:'space-between',border:'1px solid grey',borderRadius:'6px',minHeight:'100px',position:'absolute',top:'50px'}}>
                   <div style={{display:'flex',border:'1px solid grey',borderRadius:'6px',alignItems:'center',padding:'5px 8px'}}>
                     <div style={{display:'flex'}}><BiSearch/></div>
@@ -77,7 +77,7 @@ const Table = ({dataSecondHeader,valueToRemove}) => {
               if(searchInput === ''){
                 return v;
               }
-              else if(v.app_id.includes(searchInput)){
+              else if(v.app_name.includes(searchInput)){
                 return v;
               }
             }
