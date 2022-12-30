@@ -10,7 +10,7 @@ export const tableHeadSlice = createSlice({
                 }, 
                 {
                     header:'App Name',
-                    value:'app_id'
+                    value:'app_name'
                 }, 
                 {
                     header:'AD Request',

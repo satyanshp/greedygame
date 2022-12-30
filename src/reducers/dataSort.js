@@ -6,7 +6,7 @@ export const tableDataSortSlice = createSlice({
         value:
         [
             'date', 
-            'app_id', 
+            'app_name', 
             'requests', 
             'responses', 
             'impressions', 

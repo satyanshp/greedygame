@@ -115,7 +115,22 @@ function App() {
   }
   
 
+  const [appName, setAppName] = React.useState();
  //fetch request
+
+  React.useEffect(() => {
+    fetch('http://go-dev.greedygame.com/v3/dummy/apps')
+    .then(response=>response.json())
+    .then(namedata=>
+      {
+        const nameList = namedata.data.map(n=>{
+          return ({...n})
+        }) 
+        return setAppName(nameList)
+      });
+  }, [])
+
+// console.log(appName);
 
   React.useEffect(() => {
     fetch(`${fetchLink}`)
@@ -150,9 +165,28 @@ function App() {
           const ctr = (v.clicks/v.impressions)*100;
           return(ctr)
         })
+        const apppp = data.data.map(v=>{
+          let a = '';
+          const ap = appName.map(n=>{
+            if(v.app_id===n.app_id){
+              a = n.app_name
+            }
+          })
+          return a
+        })
+
         // adding fill_rate and ctr to the array
-        const updatedDataView = data.data.map(v=>{
+        const updatedDataView = data.data.map((v,index)=>{
           const date = format(parseISO(v.date), 'dd MMMM yyyy');
+          
+          // const appp = appName.map(n=>{
+          //   let a = '';
+          //   if(v.app_id===n.app_id){
+          //     a = n.app_name
+          //   }
+          //   return a
+          // })
+
           const dataNum = data.data.length;
           const requestSum = requestArray.reduce((a,b)=>a+b,0);
           const responseSum = responseArray.reduce((a,b)=>a+b,0);
@@ -163,7 +197,6 @@ function App() {
           const ctrAverage = (ctrArray.reduce((a,b)=>a+b,0)/data.data.length).toFixed(2);
 
           setDataSecondHeader({date:diffInDays,app_id:dataNum,requests:requestSum,responses:responseSum,impressions:impressionSum,clicks:clickSum,revenue:revenueSum,fill_rate:fill_rateAverage,ctr:ctrAverage})
-          console.log(dataSecondHeader)
           
           const revenue = `$${(v.revenue).toFixed(2)}`;
           const responses = numberWithCommas(v.responses);
@@ -172,8 +205,11 @@ function App() {
           const clicks = numberWithCommas(v.clicks)
           const fill_rate = `${((v.requests/v.responses)*100).toFixed(2)}%`;
           const ctr = `${((v.clicks/v.impressions)*100).toFixed(2)}%`;
-          return({...v,requests:requests,clicks:clicks,impressions:impressions,responses:responses,date:date,revenue:revenue,fill_rate:fill_rate,ctr:ctr})
+          // console.log(appp[index])
+          // console.log(apppp)
+          return({...v,requests:requests,clicks:clicks,impressions:impressions,responses:responses,date:date,revenue:revenue,fill_rate:fill_rate,ctr:ctr,app_name:apppp[index]})
         })
+        console.log(updatedDataView)
         return dispatch(dateData(updatedDataView))
       }
       )
