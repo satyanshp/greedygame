@@ -99,8 +99,9 @@ const Table = ({dataSecondHeader,valueToRemove}) => {
           ))}
         {/* </tr> */}
       </table>}
-      {dataView.length===0 && <div style={{height:'50vh', width:'100%',background:'grey',display:'flex',alignItems:'center',justifyContent:'center',fontWeight:'800',fontSize:'20px'}}>
-          Nothing to Show
+      {dataView.length===0 && <div style={{height:'50vh', width:'100%',background:'rgba(134, 134, 134, 0.493)',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',fontWeight:'800',fontSize:'20px'}}>
+           <div>Nothing to Show !</div>
+           <div style={{fontSize:'15px',fontWeight:'600'}}>Please select dates!</div>
         </div>
       }
     </div>

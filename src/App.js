@@ -58,6 +58,11 @@ function App() {
 
   const [diffInDays, setDiffInDays] = React.useState();
 
+  const [startEndDate, setStartEndDate] = React.useState({
+    startDate:'',
+    endDate:''
+  })
+
   //data fetching
   const [fetchLink, setFetchLink] = React.useState('');
 
@@ -65,6 +70,9 @@ function App() {
     const { selection } = ranges;
     // onChange(selection);
     setSelectionRange([selection]);
+    const sDate = format(selection.startDate, 'dd MMM')
+    const eDate = format(selection.endDate, 'dd MMM')
+    setStartEndDate({startDate:sDate,endDate:eDate})
     console.log(selection);
     // console.log(format(selection.startDate, 'dd MMMM yyyy'));
     setDiffInDays(differenceInDays(selection.endDate,selection.startDate)+1);
@@ -228,7 +236,7 @@ function App() {
             moveRangeOnFirstSelection={false}
             ranges={selectionRange}
           />}
-          <button className='datePicker__button' onClick={()=>setToggleDatePicker(!toggleDatePicker)}><FaCalendarAlt size={15} color='rgb(61, 145, 255)'/>date</button>
+          <button className='datePicker__button' onClick={()=>setToggleDatePicker(!toggleDatePicker)}><FaCalendarAlt size={15} color='rgb(61, 145, 255)'/>{startEndDate.startDate?`${startEndDate.startDate +' - '+ startEndDate.endDate}`:'date'}</button>
           <button className='datePicker__button' onClick={()=>setOpenSetting(!openSetting)}><GoSettings size={16} color='rgb(61, 145, 255)'/>settings</button>
         </div>
         <div>
